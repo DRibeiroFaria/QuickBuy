@@ -2,10 +2,11 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
 
 namespace QuickBuy.Dominio.Entity
 {
-    public class Pedido
+    public class Pedido : Entidade
     {
         public int Id { get; set; }
         public DateTime DataPedido { get; set; }
@@ -18,7 +19,20 @@ namespace QuickBuy.Dominio.Entity
         public int NumeroCompleto { get; set; }
         public int FormaPagamentoID { get; set; }
         public FormaPagamento FormaPagamento{ get; set; }
-        public ICollection<ItemPedido> Pedidos { get; set; }
+        public ICollection<ItemPedido> ItensPedido { get; set; }
 
+        public override void Validate()
+        {
+            LimpaMensagensValidacao();
+            if (!ItensPedido.Any()) {
+                AdicionarMensagem("Pedido não pode estar sem item de pedido!!!");
+            }
+            if (string.IsNullOrEmpty(CEP)) {
+                AdicionarMensagem("CEP deve estar preenchido!!!");
+            }
+            if (FormaPagamentoID == 0) {
+                AdicionarMensagem("Não foi selecionado metodo de pagamento");
+            }
+        }
     }
 }
